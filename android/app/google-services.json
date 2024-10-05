@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "33567685376",
+    "project_id": "paginaton-uz",
+    "storage_bucket": "paginaton-uz.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:33567685376:android:8d808ef2d3c5f88ff491e5",
+        "android_client_info": {
+          "package_name": "com.example.page_nation_example"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDgW9-cUcbZQ6V5zD9aNfD1elyMyniQyZA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
