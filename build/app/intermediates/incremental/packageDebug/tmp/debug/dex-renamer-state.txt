@@ -1,4 +1,4 @@
-#Sat Oct 05 18:15:52 UZT 2024
+#Sun Oct 06 10:43:54 UZT 2024
 base.0=/run/media/bobur/6868BDD50B63E0E61/flutter_apps/pagination_example/build/app/intermediates/dex/debug/mergeExtDexDebug/classes.dex
 base.1=/run/media/bobur/6868BDD50B63E0E61/flutter_apps/pagination_example/build/app/intermediates/dex/debug/mergeLibDexDebug/0/classes.dex
 base.2=/run/media/bobur/6868BDD50B63E0E61/flutter_apps/pagination_example/build/app/intermediates/dex/debug/mergeProjectDexDebug/0/classes.dex

@@ -16,9 +16,9 @@ class UserState extends Equatable {
 
   UserState copyWith({
     RequestStatus? status,
+    List<UserModel>? users,
     bool? isAllPagesLoaded,
     QueryDocumentSnapshot? mark,
-    List<UserModel>? users,
   }) =>
       UserState(
         status: status ?? this.status,
@@ -35,28 +35,6 @@ class UserState extends Equatable {
         mark,
       ];
 }
-
-// final class UserInitial extends UserState {}
-//
-// final class UserLoading extends UserState {}
-//
-// class UserLoaded extends UserState {
-//   final List<UserModel> users;
-//   final QueryDocumentSnapshot? lastDocs;
-//
-//   const UserLoaded({required this.users, required this.lastDocs});
-//
-//   @override
-//   List<Object?> get props => [users, lastDocs];
-// }
-//
-// final class UserEmpty extends UserState {}
-//
-// final class UserFailed extends UserState {
-//   final String message;
-//
-//   const UserFailed({required this.message});
-// }
 
 enum RequestStatus {
   pure,
