@@ -9,46 +9,40 @@ import '../../data/repository/user_repository.dart';
 part 'user_state.dart';
 
 class UserCubit extends Cubit<UserState> {
-  final UserRepository userRepository;
-  QueryDocumentSnapshot? lastData;
-  UserCubit({required this.userRepository}) : super(UserInitial());
+  final UsersRepository userRepository;
 
-  Future getItems() async {
-    emit(UserLoading());
+  UserCubit({required this.userRepository})
+      : super(
+          const UserState(
+            status: RequestStatus.pure,
+            users: [],
+            isAllPagesLoaded: false,
+          ),
+        );
+
+  List<UserModel> users = [];
+
+  Future<void> loadData() async {
+    emit(state.copyWith(status: RequestStatus.loading));
     try {
-      Map data = await userRepository.getItems();
-      if (data.isNotEmpty) {
-        lastData = data['lastDoc'];
-        emit(UserLoaded(
-          users: data['users'],
-          lastDocs: data['lastDoc'],
-        ));
-      } else {
-        emit(UserEmpty());
-      }
-    } catch (e) {
-      emit(UserFailed(message: e.toString()));
-    }
-  }
-
-  Future getMoreData() async {
-    emit(UserLoading());
-
-    try {
-      if (lastData != null) {
-        Map data = await userRepository.getMoreData(lastData!);
-        if (data.isNotEmpty) {
-          lastData = data['lastDoc'];
-          emit(UserLoaded(
-            users: data['users'],
-            lastDocs: lastData,
-          ));
+      QuerySnapshot data = await userRepository.loadUsers(state.mark);
+      if (data.docs.isNotEmpty) {
+        List<UserModel> newPage = UserModel.fromList(data.docs);
+        if (state.mark == null) {
+          users = [...newPage];
         } else {
-          emit(UserEmpty());
+          users.addAll(newPage);
         }
-      }
-    } catch (e) {
-      emit(UserFailed(message: e.toString()));
+        emit(
+          state.copyWith(
+            users: users,
+            isAllPagesLoaded: newPage.length < 15,
+            mark: data.docs.last,
+          ),
+        );
+      } else {}
+    } catch (error) {
+      emit(state.copyWith(status: RequestStatus.failure));
     }
   }
 }

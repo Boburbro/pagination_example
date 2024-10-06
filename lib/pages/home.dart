@@ -15,23 +15,17 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void initState() {
-    context.read<UserCubit>().getItems();
+    var cubit = context.read<UserCubit>();
+    cubit.loadData();
     super.initState();
-
     scrollController.addListener(() {
       double maxScroll = scrollController.position.maxScrollExtent;
-
-      if (maxScroll == scrollController.offset) {
-        if (hasData) {
-          context.read<UserCubit>().getMoreData();
-        }
+      if (maxScroll == scrollController.offset &&
+          cubit.state.isAllPagesLoaded == false) {
+        cubit.loadData();
       }
     });
   }
-
-  bool hasData = true;
-  List users = [];
-  bool isgetting = false;
 
   @override
   Widget build(BuildContext context) {
@@ -40,45 +34,39 @@ class _HomePageState extends State<HomePage> {
         title: const Text("Title"),
         centerTitle: true,
       ),
-      body: BlocListener<UserCubit, UserState>(
+      body: BlocConsumer<UserCubit, UserState>(
         listener: (context, state) {
-          if (state is UserLoaded) {
-            setState(() {
-              users.addAll(state.users);
-            });
-            isgetting = false;
-          }
-          if (state is UserEmpty) {
-            hasData = false;
-            setState(() {});
-          }
-
-          if (state is UserLoading) {
-            isgetting = true;
+          if (state.status == RequestStatus.failure) {
+            ///Fail
           }
         },
-        child: ListView.builder(
-          controller: scrollController,
-          padding: const EdgeInsets.all(16),
-          itemCount: hasData ? users.length + 1 : users.length,
-          itemBuilder: (context, index) {
-            if (index == users.length) {
-              return const Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  CircularProgressIndicator(),
-                  Text("Bir daqiqa"),
-                ],
+        builder: (context, state) {
+          return ListView.builder(
+            controller: scrollController,
+            padding: const EdgeInsets.all(16),
+            itemCount: state.users.length + 1,
+            itemBuilder: (context, index) {
+              if (index == state.users.length) {
+                return Opacity(
+                  opacity: state.isAllPagesLoaded ? 0 : 1,
+                  child: const Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      CircularProgressIndicator(),
+                      Text("Loading..."),
+                    ],
+                  ),
+                );
+              }
+              UserModel user = state.users[index];
+              return Card(
+                child: ListTile(
+                  title: Text("${index + 1} ${user.name}"),
+                ),
               );
-            }
-            UserModel user = users[index];
-            return Card(
-              child: ListTile(
-                title: Text("${index + 1} ${user.name}"),
-              ),
-            );
-          },
-        ),
+            },
+          );
+        },
       ),
     );
   }

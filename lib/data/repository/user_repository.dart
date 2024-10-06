@@ -1,49 +1,23 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import '../model/user_model.dart';
 
-class UserRepository {
-  final FirebaseFirestore firestore;
+class UsersRepository {
+  final FirebaseFirestore fireStore;
 
-  UserRepository({required this.firestore});
+  UsersRepository({
+    required this.fireStore,
+  });
 
-  Future<Map<String, dynamic>> getItems() async {
-    var collection = firestore.collection('main');
-    Query query = collection.limit(10);
-
-    QuerySnapshot querySnapshot = await query.get();
-
-    if (querySnapshot.docs.isNotEmpty) {
-      List<UserModel> items = querySnapshot.docs
-          .map((e) => UserModel(
-                id: e.id,
-                name: e.get('name'),
-              ))
-          .toList();
-      return {'users': items, 'lastDoc': querySnapshot.docs.last};
-    }
-
-    return {};
-  }
-
-  Future<Map<String, dynamic>> getMoreData(
-    QueryDocumentSnapshot lastDocs,
+  Future<QuerySnapshot> loadUsers(
+    QueryDocumentSnapshot? lastDocs,
   ) async {
-    var collection = firestore.collection('main');
-
-    Query query = collection.startAfterDocument(lastDocs).limit(10);
-
-    QuerySnapshot querySnapshot = await query.get();
-
-    if (querySnapshot.docs.isNotEmpty) {
-      List<UserModel> items = querySnapshot.docs
-          .map((e) => UserModel(
-                id: e.id,
-                name: e.get('name'),
-              ))
-          .toList();
-      return {'users': items, 'lastDoc': querySnapshot.docs.last};
+    var collection = fireStore.collection('main');
+    if (lastDocs == null) {
+      ///It mean it is the first page
+      Query query = collection.limit(15);
+      return await query.get();
+    } else {
+      Query query = collection.startAfterDocument(lastDocs).limit(15);
+      return await query.get();
     }
-
-    return {};
   }
 }

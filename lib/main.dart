@@ -20,12 +20,12 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final firestore = FirebaseFirestore.instance;
     return RepositoryProvider(
-      create: (context) => UserRepository(firestore: firestore),
+      create: (context) =>
+          UsersRepository(fireStore: FirebaseFirestore.instance),
       child: BlocProvider(
         create: (context) => UserCubit(
-          userRepository: context.read<UserRepository>(),
+          userRepository: context.read<UsersRepository>(),
         ),
         child: const MaterialApp(
           debugShowCheckedModeBanner: false,
