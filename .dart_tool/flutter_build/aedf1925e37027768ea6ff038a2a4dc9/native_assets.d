@@ -1,1 +1,0 @@
- /run/media/bobur/6868BDD50B63E0E61/flutter_apps/pagination_example/.dart_tool/flutter_build/aedf1925e37027768ea6ff038a2a4dc9/native_assets.yaml: 
